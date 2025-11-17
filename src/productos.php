@@ -48,12 +48,12 @@ $isUser  = $session->hasRole('USER');
    * - Visible solo para ADMIN.
    */
   ?>
-  <?php if ($isAdmin): ?>
-    <form method="get" action="productos.php" class="buscador-productos">
+  <form method="get" action="productos.php" class="buscador-productos">
       <input type="text" name="search" placeholder="Buscar por marca o modelo..." 
            value="<?= htmlspecialchars($search) ?>">
       <button type="submit" class="boton">🔍 Buscar</button>
     </form>
+  <?php if ($isAdmin): ?>
     <div class="boton-crear">
       <a href="create.php" class="boton">➕ Añadir nuevo producto</a>
     </div>

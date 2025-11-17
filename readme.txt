@@ -119,8 +119,7 @@ Proyecto desarrollado como práctica de PHP, PostgreSQL, Docker y despliegue con
 
    - ✔ Detalles productos
        Permite ver los detalles de los porductos.
-hola hola 
-
+adios
 9. 👨‍💻 Autor
     Miguel Zamora
     Repositorio original: https://github.com/lillo10-mz/sesanus.git

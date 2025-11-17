@@ -119,7 +119,7 @@ Proyecto desarrollado como práctica de PHP, PostgreSQL, Docker y despliegue con
 
    - ✔ Detalles productos
        Permite ver los detalles de los porductos.
-
+hola hola 
 
 9. 👨‍💻 Autor
     Miguel Zamora

@@ -1,11 +1,4 @@
 <?php
-/**
- * Página de listado de productos.
- * - Recupera todos los productos con el nombre de su categoría (JOIN).
- * - Muestra botones de acción condicionados por rol:
- *   - ADMIN: puede crear, editar y eliminar.
- *   - USER (o no autenticado): solo puede ver detalles.
- */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -13,21 +6,19 @@ use config\Config;
 use services\ProductosService;
 use services\SessionService;
 
-// 1) Obtener conexión y servicio de sesión
+// Obtener conexión y sesión
 $config = Config::getInstance();
 $db = $config->__get('db');
 $session = SessionService::getInstance();
 
-// 2) Servicio de productos
+// Servicio de productos
 $productosService = new ProductosService($db);
 
-// 3) Cargar productos (con nombre de categoría incluido)
+// Obtener productos (con barra de busqueda)
 $search = trim($_GET['search'] ?? '');
 $productos = $productosService->findAllWithCategoryName($search);
 
-// 4) Calcular permisos según roles en sesión
-//    - hasRole('ADMIN') -> true si el usuario logueado es administrador
-//    - hasRole('USER')  -> true si el usuario tiene rol básico de usuario
+// Comprobar roles
 $isAdmin = $session->hasRole('ADMIN');
 $isUser  = $session->hasRole('USER');
 ?>
@@ -42,17 +33,14 @@ $isUser  = $session->hasRole('USER');
 
 <div class="contenedor-productos">
 
-  <?php
-  /**
-   * Botón "Añadir nuevo producto"
-   * - Visible solo para ADMIN.
-   */
-  ?>
+  <?php // Buscador ?>
   <form method="get" action="productos.php" class="buscador-productos">
       <input type="text" name="search" placeholder="Buscar por marca o modelo..." 
            value="<?= htmlspecialchars($search) ?>">
       <button type="submit" class="boton">🔍 Buscar</button>
     </form>
+
+  <?php // Boton para crear producto solo para ADMIN ?>
   <?php if ($isAdmin): ?>
     <div class="boton-crear">
       <a href="create.php" class="boton">➕ Añadir nuevo producto</a>
@@ -97,16 +85,14 @@ $isUser  = $session->hasRole('USER');
             <td><?= htmlspecialchars($producto->__get('categoriaNombre')) ?></td>
 
             <td class="acciones">
-              <?php
-              ?>
+              <?php // Boton detalles ?>
               <a
                 href="details.php?id=<?= $producto->__get('id') ?>"
                 class="boton boton-detalles"
                 title="Ver detalles"
               >🔍</a>
 
-              <?php
-              ?>
+              <?php // Botones solo para ADMIN ?>
               <?php if ($isAdmin): ?>
                 <a
                   href="update.php?id=<?= $producto->__get('id') ?>"

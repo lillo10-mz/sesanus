@@ -4,9 +4,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use config\Config;
 use services\ProductosService;
 
-// =============================
-// 1️⃣ Validar parámetro ID
-// =============================
+//  Validar parametros ID
+
 $id = $_GET['id'] ?? null;
 
 if (!$id || !is_numeric($id)) {
@@ -14,9 +13,7 @@ if (!$id || !is_numeric($id)) {
     exit;
 }
 
-// =============================
-// 2️⃣ Conexión y carga del producto
-// =============================
+// Conexion y carga del producto
 $config = Config::getInstance();
 $db = $config->__get('db');
 $productosService = new ProductosService($db);

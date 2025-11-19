@@ -17,9 +17,7 @@ class UsersService
         $this->db = $db;
     }
 
-    /** PARA AUTENTIFICAR EMAIL Y CONTRASEÑA
-     * 
-     */
+    // Autenticar usuario por email y contraseña
     public function authenticate(string $email, string $password): User
     {
         // Buscar usuario por email
@@ -29,7 +27,7 @@ class UsersService
             throw new Exception('Usuario no encontrado.');
         }
 
-        // Verificar contraseña con password_verify
+        // Verificar contraseña
         if (!password_verify($password, $user->__get('password'))) {
             throw new Exception('Contraseña incorrecta.');
         }
@@ -37,9 +35,7 @@ class UsersService
         return $user;
     }
 
-    /** PARA MIRAR ROLES DE LOS USUARIOS
-     * 
-     */
+    // Buscar usuario por email y cargar sus roles
     public function findUserByEmail(string $email): ?User
     {
         $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE email = :email AND is_deleted = FALSE");
@@ -51,7 +47,7 @@ class UsersService
             return null;
         }
 
-        // Cargar roles asociados
+        // Obtener roles del usuario
         $rolesStmt = $this->db->prepare("SELECT roles FROM user_roles WHERE user_id = :id");
         $rolesStmt->execute(['id' => $row['id']]);
         $roles = $rolesStmt->fetchAll(PDO::FETCH_COLUMN);

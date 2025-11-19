@@ -2,48 +2,35 @@
 
 namespace services;
 
-/**
- * Class SessionService
- * Servicio de sesión con patrón Singleton.
- * - Centraliza toda la gestión de sesión (inicio, expiración, variables).
- * - Añade helpers para trabajar con roles (hasRole).
- */
 class SessionService
 {
-    /** Instancia única del Singleton */
+
     private static ?SessionService $instance = null;
 
-    /** Tiempo de inactividad permitido antes de expirar (1 hora) */
+    // Tiempo antes de expirar la sesión
     private int $expireAfterSeconds = 3600;
 
-    /**
-     * Constructor privado:
-     * - Inicia la sesión si no está iniciada.
-     * - Controla la expiración automática según LAST_ACTIVITY.
-     */
+    // Constructor privado: inicia sesion y controla inactividad
     private function __construct()
     {
-        // 1) Iniciar sesión si procede
+        // Iniciar sesion si no está iniciada
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // 2) Control de expiración automática por inactividad
+        // Comprobar inactividad
         if (
             isset($_SESSION['LAST_ACTIVITY']) &&
             (time() - $_SESSION['LAST_ACTIVITY']) > $this->expireAfterSeconds
         ) {
-            // Si ha pasado más de $expireAfterSeconds, cerramos sesión
             $this->logout();
         }
 
-        // 3) Actualizar marca de tiempo de la última actividad
+        // Guardar ultima actividad
         $_SESSION['LAST_ACTIVITY'] = time();
     }
 
-    /**
-     * Devuelve la instancia única del servicio (patrón Singleton).
-     */
+    // Devuelve la instancia 
     public static function getInstance(): SessionService
     {
         if (!self::$instance) {
@@ -52,28 +39,19 @@ class SessionService
         return self::$instance;
     }
 
-    /**
-     * Getter mágico de variables de sesión.
-     * - Permite acceder así: $session->loggedIn, $session->roles, etc.
-     */
+    // Obtener variable de sesion
     public function __get(string $name)
     {
         return $_SESSION[$name] ?? null;
     }
 
-    /**
-     * Setter mágico de variables de sesión.
-     * - Permite asignar así: $session->loggedIn = true;
-     */
+    // Guardar variable de sesion
     public function __set(string $name, $value): void
     {
         $_SESSION[$name] = $value;
     }
 
-    /**
-     * Comprueba si el usuario autenticado posee un rol concreto.
-     * - Espera que en $_SESSION['roles'] haya un array de strings (p.ej. ['ADMIN','USER']).
-     */
+    // Comprobar si el usuario tiene un rol
     public function hasRole(string $role): bool
     {
         if (!isset($_SESSION['roles']) || !is_array($_SESSION['roles'])) {
@@ -82,18 +60,13 @@ class SessionService
         return in_array($role, $_SESSION['roles']);
     }
 
-    /**
-     * Cierra completamente la sesión actual.
-     * - Limpia variables de sesión.
-     * - Invalida la cookie de sesión si existe.
-     * - Destruye la sesión en el servidor.
-     */
+    // Cerrar sesion completamente
     public function logout(): void
     {
-        // 1) Vaciar array de sesión
+        // Vaciar variables de sesion
         $_SESSION = [];
 
-        // 2) Invalida la cookie de sesión si el sistema la usa
+        // Borrar cookie de sesion
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
             setcookie(
@@ -107,7 +80,7 @@ class SessionService
             );
         }
 
-        // 3) Destruir la sesión en el servidor
+        // Destruir sesion
         session_destroy();
     }
 }

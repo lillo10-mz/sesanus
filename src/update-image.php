@@ -26,7 +26,7 @@ $db = $config->__get('db');
 $productosService = new ProductosService($db);
 
 
-// VALIDACIÓN DE ID Y CARGA DE PRODUCTO
+// VALIDACION DE ID Y CARGA DE PRODUCTO
 
 $id = $_GET['id'] ?? null;
 if (!$id || !is_numeric($id)) {

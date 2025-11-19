@@ -19,7 +19,7 @@ if (!$loggedIn || !$isAdmin) {
 }
 
 
-// VALIDACIÓN DEL FORMULARIO
+// VALIDACION DEL FORMULARIO
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['imagen']['name']) || empty($_POST['id'])) {
     header('Location: productos.php');
@@ -41,7 +41,7 @@ if (!$producto) {
 }
 
 
-// VALIDACIÓN DE IMAGEN
+// VALIDACION DE IMAGEN
 
 $mime = mime_content_type($_FILES['imagen']['tmp_name']);
 $permitidos = ['image/jpeg', 'image/png', 'image/webp'];
@@ -72,13 +72,13 @@ if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $destino)) {
 }
 
 
-// ACTUALIZACIÓN EN BASE DE DATOS
+// ACTUALIZACION EN BASE DE DATOS
 
 $producto->__set('imagen', $nombreImagenFinal);
 $productosService->update($producto);
 
 
-// REDIRECCIÓN FINAL
+// REDIRECCION FINAL
 
 header('Location: update-image.php?id=' . $id);
 exit;
